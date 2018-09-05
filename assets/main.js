@@ -16,7 +16,7 @@ $(document).ready(function() {
     loadTable(d);
     setInterval(function() {
         updateTable(d)
-    }, 3000)
+    }, 31000)
 });
 
 function updateTable(d) {
@@ -40,15 +40,19 @@ function updateTable(d) {
 
 function loadTable(d) {
     $.each(nodes, function(f, a) {
+    	console.log(`http://${a.hostname}:${a.port}/getinfo?random=`)
         $.ajax({
-            url: apiInterface + a.hostname + "/" + a.port + "/getinfo?random=" + (new Date).getTime(),
+            url: a.api,
             dataType: "json",
             type: "GET",
             cache: "false",
             success: function(c) {
-                c.error ? d.row.add([a.hostname, a.port, a.name, a.region, 0, 0, "0 H/s", "No", 0, 0, 0, 0, "Unknown"]).draw(!1) : d.row.add([a.hostname, a.port, a.name, a.region, c.height, c.synced ? "Yes" : "No", c.difficulty, (c.globalHashRate / 1E6).toFixed(2) + " MH/s", c.tx_pool_size, c.tx_count, c.incoming_connections_count, c.outgoing_connections_count,
+                if (c.synced) {
+                   c.error ? d.row.add([a.hostname, a.port, a.name, a.region, 0, 0, "0 H/s", "No", 0, 0, 0, 0, "Unknown"]).draw(!1) : d.row.add([a.hostname, a.port, a.name, a.region, c.height, c.synced ? "Yes" : "No", c.difficulty, (c.globalHashRate / 1E6).toFixed(2) + " MH/s", c.tx_pool_size, c.tx_count, c.incoming_connections_count, c.outgoing_connections_count,
                     c.version
-                ]).draw(!1)
+                    ]).draw(!1) 
+                }
+                
             }
         })
     })
